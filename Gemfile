@@ -31,6 +31,10 @@ gem 'jbuilder', '~> 1.2'
 # Use devise for user authentication
 gem 'devise'
 
+# Lets us customize our boostrap themes more easily
+gem 'therubyracer', :require => 'v8'
+gem 'less-rails'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
