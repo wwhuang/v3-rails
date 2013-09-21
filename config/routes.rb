@@ -1,11 +1,19 @@
 V3Rails::Application.routes.draw do
-  get "pages/index"
-  get "pages/login"
+  devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+  root 'pages#index', :as => 'home'
+
+  get 'index' => 'pages#index'
+  get 'login' => 'pages#login'
+  get 'about' => 'pages#about'
+
+  get 'graphs' => 'graphs#graphs'
+  get 'graph_generator' => 'graphs#graph_generator'
+  get '/graph/chord' => 'graphs#chord'
+  get '/graph/force_directed' => 'graphs#force_directed'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
@@ -41,7 +49,7 @@ V3Rails::Application.routes.draw do
   #       get 'recent', on: :collection
   #     end
   #   end
-  
+
   # Example resource route with concerns:
   #   concern :toggleable do
   #     post 'toggle'
