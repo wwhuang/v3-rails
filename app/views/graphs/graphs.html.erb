@@ -2,15 +2,16 @@
 <title> V3 Graph Generator </title>
 <% end %>
 
-<form name="graph_generator" action="/graph_generator" method="post">
+<%= form_tag(controller: "graphs", action: "graph_generator", method: "post") do%>
+
   <table>
     <tr>
       <td align="left"> Graph Type: </td>
       <td align="left">
         <select name="graph_type">
-        	<option value="chord">Chord Graph</option>
-        	<option value="stacked_bar">Stacked Bar Graph</option>
-        	<option value="force_directed">Force Directed Graph</option>
+          <option value="chord">Chord Graph</option>
+          <option value="stacked_bar">Stacked Bar Graph</option>
+          <option value="force_directed">Force Directed Graph</option>
         </select>
       </td>
     </tr>
@@ -28,4 +29,5 @@
     </tr>
     <tr> <td> </td> <td align="right"> <input type="submit" value="Submit"> </td> </tr>
   </table>
-</form>
+
+<% end %>
