@@ -1,7 +1,7 @@
 
 
 <% content_for :title do %>
-<title> Chord Graph Visualization </title>
+<title> V3 - Chord Graph Visualization </title>
 <% end %>
 
 <% content_for :styles do %>
@@ -39,7 +39,7 @@ var outerRadius = Math.min(width, height) / 2 - 30
 var innerRadius = outerRadius - 24;
 var ids = []
 var data_matrix = {}
-var title = 0
+var title = "<%= @title %>"
 var layout = d3.layout.chord()
     .padding(.075);
 
@@ -54,7 +54,6 @@ var arc = d3.svg.arc()
     .outerRadius(outerRadius);
 var path = d3.svg.chord()
     .radius(innerRadius);
-
 
 var svg = d3.select("#v3-visualization").append("svg")
     .attr("width", width)
@@ -84,23 +83,21 @@ svg.append("text") // Give the graph a title
   .style("text-decoration", "underline")
   .text(title);
 
-<% if @repeat %>
-var looper = setInterval(function(){getInfoAndRender()}, <%= @update_time %>);
+<% if @repeat > 0 %>
+var looper = setInterval(function(){getInfoAndRender()}, <%= @repeat %>);
 <% end %>
 
 function getInfoAndRender() {
-    <% if update_url %>
-    $.getJSON( "/get_data?update_url=" + <%= update_url %>, function(data) {
+    <% if !!@data_url %>
+    $.getJSON("/update_data?update_url=<%= @data_url.html_safe %>", function(data) {
       data_matrix = data['data']
       ids = data['ids']
-      title = data['title']
       render_graph()
     });
   <% else %>
     var one_shot_data = <%= raw(@one_shot_data.to_json) %>
     data_matrix = one_shot_data['data']
     ids = one_shot_data['ids']
-    title = one_shot_data['title']
     render_graph()
   <% end %>
 }
