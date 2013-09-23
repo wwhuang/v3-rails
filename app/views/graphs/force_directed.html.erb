@@ -1,0 +1,98 @@
+
+
+<% content_for :title do %>
+<title> V3 - Force Directed Graph Visualization </title>
+<% end %>
+
+<% content_for :styles do %>
+
+<% end %>
+
+<div id="v3-visualization"></div>
+
+<script>
+
+var margin = {top: 50, right: 30, bottom: 50, left: 30}
+var width = document.documentElement.clientWidth - margin.left - margin.right
+var height = document.documentElement.clientHeight - margin.top - margin.bottom
+var title = "<%= @title %>"
+var ids = []
+var nodes = []
+var links = []
+var layout = d3.layout.force()
+                .size([width, height])
+
+// Arc and chord factories used to generate the chord graph.
+// When calling them using the .data(m_data).attr("m_attr", m_factory) paradigm
+// these svg factories are automatically passed the data.
+// The chord layout automatically passes data in which contains all the info
+// needed to generate the correct arcs and chords, which happens magically under
+// the hood.
+
+var svg = d3.select("#v3-visualization").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+
+// Color gradient used to assign colors to each node/arc
+// Colors are drawn using the HCL color space
+var start_color = d3.hcl(98.734, 1.465, 36.795)
+var stop_color = d3.hcl(17.573, -3.297, -16.966)
+var cscale = d3.scale.linear()
+      .range(["hsl(40,100%,70%)", "hsl(240,100%,20%)"])
+      .interpolate(d3.interpolateHcl);
+
+getInfoAndRender();
+
+svg.append("text") // Give the graph a title
+  .attr("id", "graph-title")
+  .attr("x", 0)
+  .attr("y", -height/2 + 20)
+  .attr("text-anchor", "middle")
+  .style("font-size", "24px")
+  .style("text-decoration", "underline")
+  .text(title);
+
+<% if @repeat > 0 %>
+var looper = setInterval(function(){getInfoAndRender()}, <%= @repeat %>);
+<% end %>
+
+function getInfoAndRender() {
+    <% if !!@data_url %>
+    $.getJSON("/update_data?update_url=<%= @data_url.html_safe %>", function(data) {
+      nodes = data['nodes']
+      links = data['links']
+      ids = data['ids']
+      render_graph()
+    });
+  <% else %>
+    var one_shot_data = <%= raw(@one_shot_data.to_json) %>
+    data_matrix = one_shot_data['data']
+    ids = one_shot_data['ids']
+    render_graph()
+  <% end %>
+}
+
+function render_graph() {
+
+  // Colors are assigned based on your index within the data matrix.
+  // This is a proxy for assigning color based on the node's arc position.
+  cscale.domain([0, ids.length-1])
+
+  force.nodes(nodes)
+       .links(links)
+       .start();
+
+  var n = svg.select(".node")
+            .data(nodes)
+
+  n.enter()
+    .append("circle")
+      .attr("class", "node")
+      .attr("r", 5)
+      .style("fill", function(d) { return cscale(d.id); })
+
+  var l = svg.select(".link")
+              .data(links)
+}
+
+</script>
