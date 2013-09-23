@@ -10,8 +10,10 @@ V3Rails::Application.routes.draw do
   get 'login' => 'pages#login'
   get 'about' => 'pages#about'
 
-  get 'graphs' => 'graphs#graphs'
-  get 'graph_generator' => 'graphs#graph_generator'
+  get '/graphs' => 'graphs#graphs'
+  get '/graph_generator' => 'graphs#graph_generator'
+  post '/graph_generator' => 'graphs#graph_generator'
+  get '/update_data' => 'graphs#update_data'
   get '/graph/chord' => 'graphs#chord'
   get '/graph/force_directed' => 'graphs#force_directed'
 
